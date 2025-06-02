@@ -53,3 +53,4 @@ class Subscription(db.Model):
     max_books = db.Column(db.Integer, nullable=False)  # 1, 3, -1
 
     users = db.relationship('User', back_populates='subscription')
+
