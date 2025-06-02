@@ -36,6 +36,7 @@ class User(db.Model):
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     birth_date = db.Column(db.Date)
+    password=db.Column(db.String(20), unique=True, nullable=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscription.id'))
     subscription = db.relationship('Subscription')
 
@@ -52,3 +53,4 @@ class Subscription(db.Model):
     max_books = db.Column(db.Integer, nullable=False)  # 1, 3, -1
 
     users = db.relationship('User', back_populates='subscription')
+
