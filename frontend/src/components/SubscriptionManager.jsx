@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-function SubscriptionManager({ currentPlan }) {
+function SubscriptionManager({ currentPlan, onChangePlan }) {
   const [newPlan, setNewPlan] = useState(currentPlan)
 
   const handleChange = (e) => {
@@ -9,7 +9,7 @@ function SubscriptionManager({ currentPlan }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert(`Forfait changé vers ${newPlan} (simulation)`)
+    onChangePlan(newPlan)  // Appelle la fonction parent pour modifier le plan
   }
 
   return (

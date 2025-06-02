@@ -83,7 +83,7 @@ def add_user():
         email=data['email'],
         password=data['password'],
         birth_date=birth_date,
-        subscription=None  # Peut être None si pas fourni
+        subscription=subscription
     )
 
     db.session.add(new_user)
