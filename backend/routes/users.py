@@ -51,6 +51,9 @@ def add_user():
 
     if not data or 'first_name' not in data or 'last_name' not in data or 'email' not in data:
        return jsonify({'error': 'first_name, last_name, and email are required'}), 400
+    
+    if 'password' not in data:
+        return jsonify({'error': 'Password is required'}), 400
 
     birth_date = None
     if 'birth_date' in data:
@@ -73,6 +76,7 @@ def add_user():
         first_name=data['first_name'],
         last_name=data['last_name'],
         email=data['email'],
+        password=data['password'],
         birth_date=birth_date,
         subscription=None  # Peut être None si pas fourni
     )
@@ -163,3 +167,33 @@ def get_borrowed_books_for_user(id):
             'borrow_date': b.borrow_date.strftime('%Y-%m-%d')
         })
     return jsonify(result)
+
+# 🔹 Connexion utilisateur (mot de passe en clair)
+@users_bp.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({'error': 'Email and password are required'}), 400
+
+    # Recherche de l'utilisateur par email et mot de passe
+    user = User.query.options(joinedload(User.subscription)).filter_by(
+        email=data['email'],
+        password=data['password']
+    ).first()
+
+    if not user:
+        return jsonify({'error': 'Invalid email or password'}), 401
+
+    return jsonify({
+        'id': user.id,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'birth_date': user.birth_date.isoformat() if user.birth_date else None,
+        'subscription': {
+            'id': user.subscription.id,
+            'name': user.subscription.name,
+            'max_books': user.subscription.max_books
+        } if user.subscription else None
+    })
