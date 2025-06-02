@@ -2,6 +2,11 @@ from flask import Blueprint, request, jsonify
 from models import db, User, Book, UserBook, Subscription
 from datetime import datetime
 from sqlalchemy.orm import joinedload
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app) 
 
 users_bp = Blueprint('users', __name__)
 
@@ -78,7 +83,7 @@ def add_user():
         email=data['email'],
         password=data['password'],
         birth_date=birth_date,
-        subscription=None  # Peut être None si pas fourni
+        subscription=subscription
     )
 
     db.session.add(new_user)

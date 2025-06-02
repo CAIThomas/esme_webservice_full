@@ -38,6 +38,27 @@ function Home() {
       .finally(() => setLoading(false))
   }
 
+  const handleChangePlan = (newPlan) => {
+    
+    fetch(`http://localhost:5009/users/${user.id}/subscription`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscription_name: newPlan }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Erreur lors de la mise à jour du forfait')
+        return res.json()
+      })
+      .then(data => {
+        // Mets à jour l’état utilisateur avec le nouveau plan
+        setUser(prev => ({
+          ...prev,
+          subscription: { name: newPlan, max_books: data.borrow_limit }
+        }))
+      })
+      .catch(err => alert(err.message))
+  }
+
   if (loading) return <p>🔄 Connexion en cours...</p>
 
   if (!user) {
@@ -79,7 +100,7 @@ function Home() {
         quotaMax={user.subscription?.max_books || 0}
         booksBorrowed={booksBorrowed}
       />
-      <SubscriptionManager currentPlan={user.subscription?.name} />
+      <SubscriptionManager currentPlan={user.subscription?.name} onChangePlan={handleChangePlan} />
     </div>
   )
 }

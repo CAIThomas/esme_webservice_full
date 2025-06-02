@@ -6,13 +6,15 @@ from routes.subscription import subscription_bp
 from flask_migrate import Migrate
 from routes.books import books_bp as books_routes_bp
 from routes.borrow import books_bp as borrow_routes_bp
-from flask_cors import CORS
 
+from flask_cors import CORS  # ➕ Import CORS
 
 
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(Config)
+
+CORS(app)  
 
 db.init_app(app)
 migrate = Migrate(app, db)
